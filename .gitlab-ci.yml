@@ -1,0 +1,61 @@
+#https://dev.to/drakulavich/gitlab-ci-cache-and-artifacts-explained-by-example-2opi
+
+image: node:20.12.0 # фиксируем версию для воспроизводимости конвейеров
+
+stages:
+  - setup
+  - test
+  - build-image
+  - deploy
+
+variables:
+  npm_config_cache: "$CI_PROJECT_DIR/.npm"
+  #TAG_LATEST: $CI_REGISTRY_IMAGE/bot:$CI_COMMIT_REF_NAME:latest
+  TAG_COMMIT: $CI_REGISTRY_IMAGE/bot:$CI_COMMIT_SHORT_SHA
+
+# Define a hidden job to be used with extends
+# Better than default to avoid activating cache for all jobs
+.dependencies_cache:
+  cache:
+    key:
+      files:
+        - package-lock.json
+    paths:
+      - .npm
+    policy: pull
+
+setup:
+  stage: setup
+  script:
+    - npm ci
+  extends: .dependencies_cache
+  cache:
+    policy: pull-push
+  artifacts:
+    expire_in: 1h
+    paths:
+      - node_modules
+
+unit-test-job:   # This job runs in the test stage.
+  stage: test    # It only starts when the job in the setup stage completes successfully.
+  script:
+    - npm run test-ci
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - junit.xml
+
+build-image:
+  stage: build-image
+  image:
+    name: gcr.io/kaniko-project/executor:v1.14.0-debug
+    entrypoint: [ "" ]
+  script:
+    - /kaniko/executor
+      --context "${CI_PROJECT_DIR}"
+      --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
+      --destination "${TAG_COMMIT}"
+  rules:
+    - if: $CI_COMMIT_BRANCH == "master"
+    - if: $CI_COMMIT_BRANCH == "dev"
