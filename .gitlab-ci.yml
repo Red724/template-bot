@@ -59,3 +59,32 @@ build-image:
   rules:
     - if: $CI_COMMIT_BRANCH == "master"
     - if: $CI_COMMIT_BRANCH == "dev"
+
+.deploy:
+  image: alpine:3.20.3
+  script:
+    - chmod og= $ID_ED25519
+    - apk update && apk add openssh-client
+    - pwd
+    - ssh -i $ID_ED25519 -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST "mkdir -p $PROJECT_DIR"
+    - scp -i $ID_ED25519 ./compose.yaml $DEPLOY_USER@$DEPLOY_HOST:$PROJECT_DIR/compose.yaml
+    - >
+      ssh -i $ID_ED25519 -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST
+      "cd $PROJECT_DIR &&
+      echo TAG_COMMIT=${TAG_COMMIT} > .env &&
+      echo VERSION=${$CI_COMMIT_SHORT_SHA} > .env &&
+      echo BOT_TOKEN=${BOT_TOKEN} >> .env &&
+      docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY &&
+      docker compose up -d --force-recreate &&
+      docker logout $CI_REGISTRY"
+    
+
+deploy-staging:
+  stage: deploy
+  environment: staging
+  extends: .deploy
+  variables:
+    PROJECT_DIR: "$CI_PROJECT_NAME-staging"
+  rules:
+    - if: $CI_COMMIT_BRANCH == "dev"
+  dependencies: []
