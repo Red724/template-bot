@@ -11,6 +11,7 @@ services:
   bot:
     build:
       context: .
+      dockerfile: Dockerfile-dev
     env_file:
       - .env
     environment:
