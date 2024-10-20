@@ -3,6 +3,10 @@ require('dotenv').config();
 
 const BOT_TOKEN=(process.env.BOT_TOKEN || "test");
 
-//(async ()=>{
-    new Bot(BOT_TOKEN).start();
-//})();
+(async ()=>{
+    try {
+        await new Bot(BOT_TOKEN).start();
+    } catch (e) {
+        console.error(`${e.name}: ${e.message}`);
+    }
+})();
