@@ -104,6 +104,13 @@ test("gets right text on other messages", async () => {
     expect(outgoingRequests.pop().payload.text).toBe("Got another message!");
 }, 5000);
 
+test("gets version on /version command", async () => {
+    bot.getVersion=jest.fn().mockReturnValue('TEST');
+    await bot.handleUpdate(generateCommand("/version"));
+    expect(outgoingRequests.length).toBe(1);
+    expect(outgoingRequests.pop().payload.text).toBe("Версия: TEST");
+}, 5000);
+
 
 
 

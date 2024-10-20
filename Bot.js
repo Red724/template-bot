@@ -6,6 +6,7 @@ class Bot extends GrammyBot{
         super(botToken);
 
         this.command("start", this.startCommandHandler.bind(this));
+        this.command("version", this.versionCommandHandler.bind(this));
 
         // Handle other messages.
         this.on("message", async (ctx) => {
@@ -28,6 +29,14 @@ class Bot extends GrammyBot{
 
     async startCommandHandler(ctx, next){
         return ctx.reply("Received /start command.");
+    }
+
+    async versionCommandHandler(ctx, next){
+        return  ctx.reply(`Версия: ${this.getVersion()}`);
+    }
+
+    getVersion(){
+        return process.env.VERSION;
     }
 
 }
