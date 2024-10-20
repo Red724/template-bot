@@ -88,3 +88,13 @@ deploy-staging:
   rules:
     - if: $CI_COMMIT_BRANCH == "dev"
   dependencies: []
+
+deploy-production:
+  stage: deploy
+  environment: production
+  extends: .deploy
+  variables:
+    PROJECT_DIR: "$CI_PROJECT_NAME"
+  rules:
+    - if: $CI_COMMIT_BRANCH == "master"
+  dependencies: []
