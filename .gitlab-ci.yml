@@ -66,7 +66,7 @@ build-image:
     - chmod og= $ID_ED25519
     - apk update && apk add openssh-client
     - pwd
-    - ssh -i $ID_ED25519 -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST "mkdir -p $PROJECT_DIR"
+    - ssh -i $ID_ED25519 -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST "mkdir -p $PROJECT_DIR $PROJECT_DIR/config"
     - scp -i $ID_ED25519 ./compose.yaml $DEPLOY_USER@$DEPLOY_HOST:$PROJECT_DIR/compose.yaml
     - >
       ssh -i $ID_ED25519 -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST
