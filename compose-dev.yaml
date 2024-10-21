@@ -16,6 +16,8 @@ services:
       - .env
     environment:
       NODE_ENV: production
+    volumes:
+      - ./config:/usr/src/app/config
 #    ports:
 #      - 3000:3000
 

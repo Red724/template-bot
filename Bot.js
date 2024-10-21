@@ -2,11 +2,14 @@ const { BotError, GrammyError, HttpError} = require("grammy");
 const GrammyBot=require("grammy").Bot;
 
 class Bot extends GrammyBot{
-    constructor(botToken) {
+    constructor(botToken,config) {
         super(botToken);
+
+        this.name = config.name;
 
         this.command("start", this.startCommandHandler.bind(this));
         this.command("version", this.versionCommandHandler.bind(this));
+        this.command("name", this.nameCommandHandler.bind(this));
 
         // Handle other messages.
         this.on("message", async (ctx) => {
@@ -27,12 +30,24 @@ class Bot extends GrammyBot{
         });
     }
 
+    async initCommands(){
+        await this.api.setMyCommands([
+            { command: "start", description: "Запуск" },
+            { command: "version", description: "Версия" },
+            { command: "name", description: "Параметр из конфига" },
+        ]);
+    }
+
     async startCommandHandler(ctx, next){
         return ctx.reply("Received /start command.");
     }
 
     async versionCommandHandler(ctx, next){
         return  ctx.reply(`Версия: ${this.getVersion()}`);
+    }
+
+    async nameCommandHandler(ctx, next){
+        return  ctx.reply(`Меня зовут ${this.name}.`);
     }
 
     getVersion(){

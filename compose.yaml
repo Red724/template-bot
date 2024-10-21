@@ -5,3 +5,5 @@ services:
       - .env
     environment:
       NODE_ENV: production
+    volumes:
+      - ./config:/usr/src/app/config
