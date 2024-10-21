@@ -11,6 +11,7 @@ const BOT_TOKEN=(process.env.BOT_TOKEN || "test");
         let config = JSON.parse(data);
         let bot = new Bot(BOT_TOKEN,config);
         await bot.initCommands();
+        await bot.start();
     } catch (e) {
         if (e.code === 'ENOENT' || e.code === 'EACCES') {
             console.error(`Error on reading config: ${e.message}`);
