@@ -1,6 +1,6 @@
 const  Bot = require("./Bot.js");
 const {readFileSync} = require("node:fs");
-require('dotenv').config();
+require('dotenv').config({ path: ['.env.local','.env', ] });
 
 const BOT_TOKEN=(process.env.BOT_TOKEN || "test");
 
