@@ -1,63 +1,11 @@
 const ExampleBot = require("../Bot");
+const TgTestHelpers=require("./TgTestHelpers");
 
 let outgoingRequests = [];
 
 let  bot;
 
-function generateMessage(message) {
-    return {
-        update_id: 10000,
-        message: {
-            message_id: 1365,
-            from: {
-                id: 1111111,
-                is_bot: false,
-                first_name: "Test firstname",
-                username: "rest",
-                language_code: "ru"
-            },
-            chat: {
-                id: 5555555,
-                first_name: "Test firstname",
-                username: "test",
-                type: "private"
-            },
-            date: 1441645532,
-            text: message,
-        },
-    };
-}
 
-function generateCommand(command) {
-    return {
-        update_id: 10000,
-        message: {
-            message_id: 1,
-            from: {
-                id: 1111111,
-                is_bot: false,
-                first_name: "Test firstname",
-                username: "test",
-                language_code: "ru"
-            },
-            chat: {
-                id: 5555555,
-                first_name: "Test firstname",
-                username: "test",
-                type: "private"
-            },
-            date: 1441645532,
-            text: command,
-            entities: [
-                {
-                    offset: 0,
-                    length: command.length,
-                    type: "bot_command"
-                }
-            ]
-        }
-    };
-}
 
 function returnOk(method,payload){
     return { ok: true, result: true}
@@ -91,14 +39,14 @@ beforeEach(async () => {
 
 
 test("gets right text on /start command", async () => {
-    await bot.handleUpdate(generateCommand("/start"));
+    await bot.handleUpdate(TgTestHelpers.generateCommand("/start"));
 
     expect(outgoingRequests.length).toBe(1);
     expect(outgoingRequests.pop().payload.text).toBe("Received /start command.");
 }, 5000);
 
 test("gets right text on other messages", async () => {
-    await bot.handleUpdate(generateMessage("foo"));
+    await bot.handleUpdate(TgTestHelpers.generateMessage("foo"));
 
     expect(outgoingRequests.length).toBe(1);
     expect(outgoingRequests.pop().payload.text).toBe("Got another message!");
@@ -106,13 +54,13 @@ test("gets right text on other messages", async () => {
 
 test("gets version on /version command", async () => {
     bot.getVersion=jest.fn().mockReturnValue('TEST');
-    await bot.handleUpdate(generateCommand("/version"));
+    await bot.handleUpdate(TgTestHelpers.generateCommand("/version"));
     expect(outgoingRequests.length).toBe(1);
     expect(outgoingRequests.pop().payload.text).toBe("Версия: TEST");
 }, 5000);
 
 test("gets config param on /name command", async () => {
-    await bot.handleUpdate(generateCommand("/name"));
+    await bot.handleUpdate(TgTestHelpers.generateCommand("/name"));
     expect(outgoingRequests.length).toBe(1);
     expect(outgoingRequests.pop().payload.text).toBe("Меня зовут test bot.");
 }, 5000);
