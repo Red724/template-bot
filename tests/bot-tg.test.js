@@ -72,6 +72,24 @@ test("gets config param on /name command", async () => {
     expect(outgoingRequests.pop().payload.text).toBe("Меня зовут test bot.");
 }, 5000);
 
+test("команда /name даёт ответ в топик", async () => {
+    // noinspection JSCheckFunctionSignatures
+    await bot.handleUpdate(
+        TgTestHelpers.generateCommandInTopic("/name",-12345,2)
+    );
+
+    expect(outgoingRequests.pop().payload.message_thread_id).toBe(2);
+}, 5000);
+
+test("команда /version даёт ответ в топик", async () => {
+    // noinspection JSCheckFunctionSignatures
+    await bot.handleUpdate(
+        TgTestHelpers.generateCommandInTopic("/version",-12345,2)
+    );
+
+    expect(outgoingRequests.pop().payload.message_thread_id).toBe(2);
+}, 5000);
+
 
 
 

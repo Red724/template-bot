@@ -45,11 +45,17 @@ class Bot extends GrammyBot{
     }
 
     async versionCommandHandler(ctx, next){
-        return  ctx.reply(`Версия: ${this.getVersion()}`);
+        return  ctx.reply(
+            `Версия: ${this.getVersion()}`,
+            {message_thread_id:ctx.message.message_thread_id}
+        );
     }
 
     async nameCommandHandler(ctx, next){
-        return  ctx.reply(`Меня зовут ${this.name}.`);
+        return  ctx.reply(
+            `Меня зовут ${this.name}.`,
+            {message_thread_id:ctx.message.message_thread_id}
+        );
     }
 
     getVersion(){
