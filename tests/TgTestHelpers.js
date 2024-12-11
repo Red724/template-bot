@@ -1,4 +1,8 @@
-class TgTestHelpers{
+class TgTestHelpers {
+    static testFirstName = "Firstname";
+    static testUserName = "username";
+    static testUserId = "12345";
+
     static generateMessage(message) {
         return {
             update_id: 10000,
@@ -22,6 +26,7 @@ class TgTestHelpers{
             },
         };
     }
+
     static generateCommand(command) {
         return {
             update_id: 10000,
@@ -52,5 +57,37 @@ class TgTestHelpers{
             }
         };
     }
+
+    static generateCommandInSupergroup(command, chatId) {
+        return {
+            "update_id": 945652587,
+            "message": {
+                "message_id": 136,
+                "from": {
+                    "id": this.testUserId,
+                    "is_bot": false,
+                    "first_name": this.testFirstName,
+                    "username": this.testUserName,
+                    "language_code": "ru"
+                },
+                "chat": {
+                    "id": chatId,
+                    "title": "тестовая супергруппа",
+                    "is_forum": true,
+                    "type": "supergroup"
+                },
+                "date": 1733785274,
+                "text": command,
+                "entities": [
+                    {
+                        offset: 0,
+                        length: command.length,
+                        type: "bot_command"
+                    }
+                ],
+            }
+        }
+    }
 }
+
 module.exports = TgTestHelpers;

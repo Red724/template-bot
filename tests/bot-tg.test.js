@@ -45,6 +45,13 @@ test("gets right text on /start command", async () => {
     expect(outgoingRequests.pop().payload.text).toBe("Received /start command.");
 }, 5000);
 
+test("команда /start не работает в супергруппах", async () => {
+    // noinspection JSCheckFunctionSignatures
+    await bot.handleUpdate(TgTestHelpers.generateCommandInSupergroup("/start",-12345));
+
+    expect(outgoingRequests.length).toBe(0);
+}, 5000);
+
 test("gets right text on other messages", async () => {
     await bot.handleUpdate(TgTestHelpers.generateMessage("foo"));
 

@@ -39,6 +39,8 @@ class Bot extends GrammyBot{
     }
 
     async startCommandHandler(ctx, next){
+        if(ctx.chat.type !== "private")
+            return ;
         return ctx.reply("Received /start command.");
     }
 
